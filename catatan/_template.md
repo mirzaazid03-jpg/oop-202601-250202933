@@ -1,6 +1,6 @@
 # Catatan Minggu NN: (topik)
 
-Salin berkas ini menjadi `catatan/minggu-NN.md` (NN dua digit, misalnya `minggu-07.md`).
+Salin berkas ini `catatan/minggu-NN.md` (NN dua digit, misalnya `minggu-07.md`).
 
 ## Yang saya kerjakan
 (2-5 kalimat dengan bahasa Anda sendiri)
