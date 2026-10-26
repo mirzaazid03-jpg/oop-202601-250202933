@@ -13,10 +13,13 @@ public class HelloOOP {
         this.nim = nim;
     }
 
-    /** TODO minggu 1: sapaan memuat "Aset-Pinjam", nama, dan NIM. */
-    public String sapa() {
-        return "Aset-Pinjam " + this.nama + " dengan NIM " + this.nim + ".";
-    }
+    
+/** Menghasilkan sapaan selamat datang. */
+public String sapa() {
+    return "Halo " + this.nama
+            + ", selamat datang di Aset-Pinjam dengan NIM "
+            + this.nim + ".";
+}
 
     public static void main(String[] args) {
         Varian v = Varian.aktif();

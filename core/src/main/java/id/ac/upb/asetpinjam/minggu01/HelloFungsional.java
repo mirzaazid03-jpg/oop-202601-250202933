@@ -1,7 +1,8 @@
 package id.ac.upb.asetpinjam.minggu01;
 
-import id.ac.upb.asetpinjam.config.Varian;
 import java.util.function.Function;
+
+import id.ac.upb.asetpinjam.config.Varian;
 
 /** Minggu 1, gaya FUNGSIONAL: fungsi sebagai nilai (lambda), tanpa state yang berubah. */
 public final class HelloFungsional {
@@ -14,8 +15,9 @@ public final class HelloFungsional {
      * yang memuat "Aset-Pinjam", nama tersebut, dan NIM yang diberikan. Gunakan lambda.
      */
     public static Function<String, String> pembuatSapaan(String nim) {
-        return nama -> "halo " + nama + ", selamat datang di aset-pinjam dengan NIM " + nim + ".";
-    }
+    return nama -> "Halo " + nama
+        + ", selamat datang di Aset-Pinjam dengan NIM " + nim + ".";
+}
 
     public static void main(String[] args) {
         Varian v = Varian.aktif();
