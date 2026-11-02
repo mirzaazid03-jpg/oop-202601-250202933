@@ -1,4 +1,4 @@
-# Catatan Minggu 04: (Override Method Hitung Denda)
+# Catatan Minggu 04: (Polymorphism)
 
 Salin berkas ini `catatan/minggu-NN.md` (NN dua digit, misalnya `minggu-07.md`).
 
