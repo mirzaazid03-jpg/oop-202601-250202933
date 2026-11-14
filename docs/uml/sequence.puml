@@ -1,46 +1,80 @@
+
 @startuml
 title Aset-Pinjam - Sequence Diagram Pengajuan Peminjaman
 
-actor "Pemohon / pemanggil" as Pemohon
+actor "Pemohon / Pemanggil" as Pemohon
+
 participant "JadwalPeminjaman" as Jadwal
 participant "Peminjaman" as Pinjam
 participant "Aset" as Aset
-participant "Peminjam" as Orang
 participant "PeminjamanBentrokException" as Bentrok
+
+note over Pemohon, Bentrok
+  Diagram menggambarkan kontrak proses pengajuan
+  berdasarkan dokumentasi dan struktur kode.
+  
+  Catatan implementasi:
+  - ajukan() masih TODO minggu 9.
+  - bentrok() masih TODO minggu 7.
+  - tambah() sudah tersedia dan menambahkan data
+    tanpa pemeriksaan bentrok.
+end note
 
 Pemohon -> Jadwal: ajukan(baru: Peminjaman)
 activate Jadwal
 
-note right of Jadwal
-  Kontrak pada komentar Javadoc:
-  ajukan() memeriksa bentrok lalu menambahkan
-  peminjaman jika tidak bentrok.
-  Implementasi method saat ini masih TODO minggu 9.
-end note
-
 Jadwal -> Pinjam: getAset()
 Pinjam --> Jadwal: aset
+
 Jadwal -> Aset: getKode()
 Aset --> Jadwal: kode aset
-Jadwal -> Pinjam: getMulai(), getSelesai()
-Pinjam --> Jadwal: rentang waktu
 
-alt Tidak ada bentrok (skenario sukses - sesuai kontrak Javadoc)
-  Jadwal -> Jadwal: tambah(baru)
-  note right
-    Peminjaman masuk ke daftar.
-    Pada kode saat ini, cabang ini belum
-    dapat dijalankan melalui ajukan().
-  end note
-  Jadwal --> Pemohon: selesai tanpa exception
-else Bentrok dengan peminjaman aset yang sama
-  Jadwal -> Bentrok: buat / lempar exception
-  note right of Bentrok
-    PeminjamanBentrokException tersedia,
-    tetapi constructor masih memakai pesan TODO.
-  end note
-  Bentrok --> Pemohon: exception bentrok
+Jadwal -> Pinjam: getMulai()
+Pinjam --> Jadwal: waktu mulai
+
+Jadwal -> Pinjam: getSelesai()
+Pinjam --> Jadwal: waktu selesai
+
+Jadwal -> Jadwal: bentrok(baru)
+
+alt Tidak terjadi bentrok (skenario sukses)
+
+    Jadwal -> Jadwal: tambah(baru)
+
+    note right of Jadwal
+      Peminjaman ditambahkan
+      ke dalam daftar.
+      
+      tambah() sudah tersedia,
+      tetapi belum dipanggil
+      melalui ajukan().
+    end note
+
+    Jadwal --> Pemohon: selesai tanpa exception
+
+else Terjadi bentrok (skenario bentrok)
+
+    note right of Jadwal
+      Cabang ini merupakan kontrak
+      perilaku yang direncanakan.
+      
+      bentrok() masih TODO minggu 7.
+      ajukan() masih TODO minggu 9.
+    end note
+
+    Jadwal -> Bentrok: new PeminjamanBentrokException()
+    Bentrok --> Jadwal: objek exception
+
+    note right of Bentrok
+      Constructor sudah tersedia,
+      tetapi pesan exception
+      masih TODO minggu 9.
+    end note
+
+    Jadwal --> Pemohon: lempar PeminjamanBentrokException
+
 end
 
 deactivate Jadwal
+
 @enduml
