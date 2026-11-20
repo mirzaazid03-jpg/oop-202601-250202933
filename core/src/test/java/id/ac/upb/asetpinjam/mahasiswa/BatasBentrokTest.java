@@ -1,14 +1,14 @@
 package id.ac.upb.asetpinjam.mahasiswa;
 
-import static id.ac.upb.asetpinjam.TestSupport.pinjam;
 import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import id.ac.upb.asetpinjam.TestSupport;
+import static id.ac.upb.asetpinjam.TestSupport.pinjam;
 import id.ac.upb.asetpinjam.config.Varian;
 import id.ac.upb.asetpinjam.jadwal.JadwalPeminjaman;
 import id.ac.upb.asetpinjam.model.Peminjaman;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 class BatasBentrokTest {
 
