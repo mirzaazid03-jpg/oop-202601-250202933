@@ -57,3 +57,36 @@ Denda Progresif = Denda Flat +
 
 jika keterlambatan 0 hari atau kurang,
 maka denda adalah Rp0.
+
+
+## minggu 7 - jadwal peminjaman
+
+### 1. Aturan Bentrok Peminjaman
+
+Peminjaman dianggap bentrok apabila terdapat dua peminjaman pada aset yang sama dengan waktu yang saling tumpang tindih.
+
+Pengecekan bentrok dilakukan berdasarkan kode aset dan rentang waktu peminjaman.
+
+### 2. Batas Waktu Peminjaman
+
+Menggunakan interval setengah terbuka `[mulai, selesai)`.
+
+Artinya, waktu selesai peminjaman pertama boleh sama dengan waktu mulai peminjaman berikutnya dan kondisi tersebut tidak dianggap bentrok.
+
+Contoh:
+- Peminjaman A: 09.00–11.00.
+- Peminjaman B: 11.00–13.00.
+
+Kedua peminjaman tersebut dianggap TIDAK bentrok.
+
+### 3. Pengurutan Peminjaman
+
+Daftar peminjaman diurutkan berdasarkan waktu mulai dari yang paling awal hingga paling akhir.
+
+### 4. Pengelompokan Peminjaman
+
+Peminjaman dikelompokkan berdasarkan kode aset menggunakan struktur Map agar data setiap aset dapat dikelola secara terpisah.
+
+### 5. Penghapusan Peminjaman
+
+Penghapusan dilakukan berdasarkan ID peminjaman. Metode mengembalikan nilai true jika terdapat data yang berhasil dihapus dan false jika data tidak ditemukan.
