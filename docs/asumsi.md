@@ -44,6 +44,18 @@ ketentuan:
 - denda meningkat seiring bertambahnya hari.
 - pada hari ke-30, denda menjadi 2 kali denda flat.
 
+
+## Minggu 5 - Aturan Denda
+
+1. DendaFlat menggunakan hasil perhitungan
+   aset.hitungDenda(hariTerlambat) secara langsung.
+2. DendaProgresif menggunakan denda dasar aset
+   ditambah tambahan sebesar denda dasar dikalikan
+   jumlah hari keterlambatan dibagi 30.
+3. Keterlambatan nol atau negatif menghasilkan denda nol.
+4. Denda progresif tidak lebih murah daripada denda flat.
+
+
 ## Aturan Denda Progresif
 
 denda progresif dihitung berdasarkan denda flat

@@ -1,9 +1,13 @@
+
 package id.ac.upb.asetpinjam.exception;
 
-/** Minggu 9: kuota peminjaman peminjam sudah habis. Pesan harus menyebut peminjam dan kuotanya. */
+/**
+ * Exception ketika kuota peminjaman laptop habis.
+ */
 public class KuotaHabisException extends AsetPinjamException {
 
-    public KuotaHabisException() {
-        super("TODO minggu 9: isi pesan yang jelas");
+    public KuotaHabisException(String idPeminjam, int kuota) {
+        super("Kuota laptop peminjam " + idPeminjam
+                + " sudah habis. Batas kuota: " + kuota);
     }
 }

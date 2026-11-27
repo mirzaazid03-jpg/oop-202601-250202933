@@ -2,6 +2,8 @@ package id.ac.upb.asetpinjam.model;
 
 import java.time.LocalDateTime;
 
+import id.ac.upb.asetpinjam.exception.StatusTidakSahException;
+
 /**
  * Satu pengajuan peminjaman aset oleh seorang peminjam pada rentang waktu tertentu.
  * Konstruktor dan getter DISEDIAKAN dosen. Anda mengerjakan ubahStatus (minggu 9).
@@ -63,6 +65,31 @@ public class Peminjaman {
      * docs/aturan-bisnis.md. Jika tidak sah, lempar StatusTidakSahException (dengan pesan jelas).
      */
     public void ubahStatus(StatusPeminjaman baru) {
-        throw new UnsupportedOperationException("TODO minggu 9: Peminjaman.ubahStatus");
+
+    boolean sah = switch (status) {
+        case DIAJUKAN ->
+            baru == StatusPeminjaman.DISETUJUI
+            || baru == StatusPeminjaman.DITOLAK;
+
+        case DISETUJUI ->
+            baru == StatusPeminjaman.DIPINJAM
+            || baru == StatusPeminjaman.DIBATALKAN;
+
+        case DIPINJAM ->
+            baru == StatusPeminjaman.DIKEMBALIKAN
+            || baru == StatusPeminjaman.TERLAMBAT;
+
+        case TERLAMBAT ->
+            baru == StatusPeminjaman.DIKEMBALIKAN;
+
+        case DITOLAK, DIBATALKAN, DIKEMBALIKAN -> false;
+    };
+
+    if (!sah) {
+        throw new StatusTidakSahException(status, baru);
     }
+
+    status = baru;
+}
+
 }

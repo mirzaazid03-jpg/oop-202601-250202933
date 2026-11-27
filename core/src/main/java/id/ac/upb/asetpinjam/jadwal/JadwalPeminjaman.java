@@ -1,3 +1,4 @@
+
 package id.ac.upb.asetpinjam.jadwal;
 
 import java.util.ArrayList;
@@ -6,13 +7,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import id.ac.upb.asetpinjam.exception.KuotaHabisException;
+import id.ac.upb.asetpinjam.exception.PeminjamanBentrokException;
 import id.ac.upb.asetpinjam.model.Peminjaman;
+import id.ac.upb.asetpinjam.model.Laptop;
+import id.ac.upb.asetpinjam.model.StatusPeminjaman;
 
 /**
  * Jadwal peminjaman di memori.
  *
- * <p>Minggu 7: bentrok, semuaUrutMulai, perAset, hapus. Minggu 9: ajukan (melempar exception).
- * tambah() DISEDIAKAN dan sengaja TIDAK memeriksa apa pun.
+ * Minggu 7: bentrok, semuaUrutMulai, perAset, hapus.
+ * Minggu 9: ajukan (melempar exception).
+ *
+ * tambah() disediakan dan sengaja tidak memeriksa apa pun.
  */
 public class JadwalPeminjaman {
 
@@ -37,15 +44,26 @@ public class JadwalPeminjaman {
     }
 
     /**
-     * TODO minggu 7: true jika {@code baru} bentrok dengan peminjaman yang sudah ada untuk ASET YANG SAMA.
-     * Definisi "bentrok" di batas waktu (selesai sama dengan mulai) adalah KEPUTUSAN ANDA (docs/asumsi.md).
+     * Memeriksa bentrok jadwal untuk aset yang sama.
+     * Status ditolak, dibatalkan, dan dikembalikan
+     * tidak lagi menggunakan jadwal.
      */
     public boolean bentrok(Peminjaman baru) {
+
         for (Peminjaman p : daftar) {
 
             // Aset berbeda tidak dianggap bentrok
             if (!p.getAset().getKode().equals(
                     baru.getAset().getKode())) {
+                continue;
+            }
+
+            // Status yang tidak lagi menggunakan jadwal
+            StatusPeminjaman status = p.getStatus();
+
+            if (status == StatusPeminjaman.DITOLAK
+                    || status == StatusPeminjaman.DIBATALKAN
+                    || status == StatusPeminjaman.DIKEMBALIKAN) {
                 continue;
             }
 
@@ -62,9 +80,9 @@ public class JadwalPeminjaman {
         return false;
     }
 
-
-    /** TODO minggu 7: semua peminjaman, diurutkan menurut waktu mulai (gunakan Comparator). */
+    /** Mengurutkan semua peminjaman berdasarkan waktu mulai. */
     public List<Peminjaman> semuaUrutMulai() {
+
         List<Peminjaman> hasil = new ArrayList<>(daftar);
 
         hasil.sort(
@@ -74,12 +92,13 @@ public class JadwalPeminjaman {
         return hasil;
     }
 
-
-    /** TODO minggu 7: peminjaman dikelompokkan menurut kode aset. */
+    /** Mengelompokkan peminjaman berdasarkan kode aset. */
     public Map<String, List<Peminjaman>> perAset() {
+
         Map<String, List<Peminjaman>> hasil = new TreeMap<>();
 
         for (Peminjaman p : daftar) {
+
             String kode = p.getAset().getKode();
 
             hasil.computeIfAbsent(kode, k -> new ArrayList<>())
@@ -88,17 +107,62 @@ public class JadwalPeminjaman {
 
         return hasil;
     }
-    /** TODO minggu 7: hapus peminjaman berdasarkan id. True jika ada yang terhapus. */
+
+    /** Menghapus peminjaman berdasarkan ID. */
     public boolean hapus(String id) {
         return daftar.removeIf(p -> p.getId().equals(id));
     }
 
     /**
-     * TODO minggu 9: periksa lalu tambahkan.
-     * Bentrok: PeminjamanBentrokException. Peminjam sudah memegang {@link #kuotaLaptop()} laptop yang
-     * aktif (status DISETUJUI atau DIPINJAM) dan mengajukan laptop lagi: KuotaHabisException.
+     * Memeriksa bentrok dan kuota sebelum menambahkan peminjaman.
      */
     public void ajukan(Peminjaman baru) {
-        throw new UnsupportedOperationException("TODO minggu 9: ajukan");
+
+        // 1. Periksa bentrok jadwal
+        if (bentrok(baru)) {
+            throw new PeminjamanBentrokException(
+                    baru.getAset().getKode()
+            );
+        }
+
+        // 2. Periksa kuota jika aset berupa Laptop
+        if (baru.getAset() instanceof Laptop) {
+
+            String idPeminjam = baru.getPeminjam().id();
+            int jumlahLaptopAktif = 0;
+
+            // 3. Hitung laptop aktif milik peminjam yang sama
+            for (Peminjaman p : daftar) {
+
+                // Hanya menghitung aset Laptop
+                if (!(p.getAset() instanceof Laptop)) {
+                    continue;
+                }
+
+                // Hanya menghitung peminjam yang sama
+                if (!p.getPeminjam().id().equals(idPeminjam)) {
+                    continue;
+                }
+
+                StatusPeminjaman status = p.getStatus();
+
+                // Hanya status DISETUJUI dan DIPINJAM yang dihitung
+                if (status == StatusPeminjaman.DISETUJUI
+                        || status == StatusPeminjaman.DIPINJAM) {
+                    jumlahLaptopAktif++;
+                }
+            }
+
+            // 4. Periksa apakah kuota sudah habis
+            if (jumlahLaptopAktif >= kuotaLaptop) {
+                throw new KuotaHabisException(
+                        idPeminjam,
+                        kuotaLaptop
+                );
+            }
+        }
+
+        // 5. Jika semua pemeriksaan lolos, tambahkan peminjaman
+        daftar.add(baru);
     }
 }
